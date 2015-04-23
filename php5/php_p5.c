@@ -1,5 +1,9 @@
 #include "php_p5.h"
 
+static zend_function_entry p5_functions[] = {
+	PHP_FE_END
+};
+
 /* REGISTER_NULL_CONSTANT and REGISTER_BOOL_CONSTANT
  * don't exist prior to PHP-5.6
  * Use these defines if you need them anyway.
@@ -41,7 +45,7 @@ static PHP_MINIT_FUNCTION(p5) {
 zend_module_entry p5_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"p5", /* name */
-	NULL, /* functions */
+	p5_functions,
 	PHP_MINIT(p5),
 	NULL, /* MSHUTDOWN */
 	NULL, /* RINIT */
