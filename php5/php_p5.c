@@ -118,6 +118,35 @@ PHP_FUNCTION(p5_array) {
   }
 }
 
+static PHP_FUNCTION(p5_greet_all) {
+  HashTable *arr;
+  HashPosition pos;
+  zval **ppz;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+                            "h", &arr) == FAILURE) { return; }
+
+  for (zend_hash_internal_pointer_reset_ex(arr, &pos);
+       SUCCESS == zend_hash_get_current_data_ex(arr, (void**)&ppz, &pos);
+       zend_hash_move_forward_ex(arr, &pos)) {
+    char *key;
+    ulong idx;
+    uint len, key_type = zend_hash_get_current_key_ex(arr, &key, &len, &idx, 0, &pos);
+    zval copy;
+
+    if (key_type == HASH_KEY_IS_STRING) {
+      printf("%s ", key);
+    } else {
+      printf("%ld ", idx);
+    }
+
+    ZVAL_ZVAL(&copy, *ppz, 1, 0);
+    convert_to_string(&copy);
+    printf("=> %s\n", Z_STRVAL(copy));
+    zval_dtor(&copy);
+  }
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
@@ -127,6 +156,7 @@ static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_greeting_by_ref, p5_greeting_by_ref_arginfo)
 	PHP_FE(p5_enum_greetings, NULL)
 	PHP_FE(p5_array, p5_array_arginfo)
+	PHP_FE(p5_greet_all, NULL)
 	PHP_FE_END
 };
 
