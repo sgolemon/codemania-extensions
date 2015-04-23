@@ -1,2 +1,10 @@
 HHVM_EXTENSION(h3 ext_h3.cpp)
 HHVM_SYSTEMLIB(h3 ext_h3.php)
+
+find_path(BZIP_INCLUDE_PATH NAMES bzlib.h)
+find_library(BZIP_LIBRARY NAMES bz2)
+if (NOT BZIP_INCLUDE_PATH OR NOT BZIP_LIBRARY)
+  message(FATAL_ERROR "Unable to find libbz2")
+endif()
+include_directories(${BZIP_INCLUDE_PATH})
+target_link_libraries(h3 ${BZIP_LIBRARY})

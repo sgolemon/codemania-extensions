@@ -3,6 +3,9 @@
 define('H3_NOTHING', null);
 define('H3_FLOATY', 2.71);
 
+<<__Native>>
+function h3_bzlib_version(): string;
+
 function h3_hello_world() {
   echo "Hello World!\n";
 }

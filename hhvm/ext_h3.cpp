@@ -1,6 +1,7 @@
 #include "hphp/runtime/ext/extension.h"
 #include "hphp/runtime/base/execution-context.h"
 #include "hphp/runtime/vm/native-data.h"
+#include <bzlib.h>
 
 using namespace HPHP;
 
@@ -24,6 +25,10 @@ class MyClassData {
 
   int64_t counter;
 };
+
+static String HHVM_FUNCTION(h3_bzlib_version) {
+  return BZ2_bzlibVersion();
+}
 
 static int64_t HHVM_FUNCTION(h3_add, int64_t a, int64_t b) {
   return a + b;
@@ -121,6 +126,7 @@ class H3Extension : public Extension {
     Native::registerConstant<KindOfInt64>(s_H3_INTY.get(), 123);
     Native::registerConstant<KindOfString>(s_H3_GREETING.get(), s_Hello_World.get());
 
+    HHVM_FE(h3_bzlib_version);
     HHVM_FE(h3_add);
     HHVM_FE(h3_enum_greetings);
     HHVM_FE(h3_iterate);
