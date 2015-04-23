@@ -1,6 +1,11 @@
 #include "php_p5.h"
 
+static PHP_FUNCTION(p5_hello_world) {
+	php_printf("Hello World\n");
+}
+
 static zend_function_entry p5_functions[] = {
+	PHP_FE(p5_hello_world, NULL)
 	PHP_FE_END
 };
 
