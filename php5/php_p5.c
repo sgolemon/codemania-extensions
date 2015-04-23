@@ -36,11 +36,34 @@ static PHP_FUNCTION(p5_add) {
   RETURN_LONG(a + b);
 }
 
+ZEND_BEGIN_ARG_INFO_EX(p5_greet_arginfo, 0, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(0, name)
+  ZEND_ARG_INFO(0, greet)
+  ZEND_ARG_INFO(0, count)
+ZEND_END_ARG_INFO();
+static PHP_FUNCTION(p5_greet) {
+  char *name;
+  int name_len;
+  zend_bool greet = 0;
+  long count = 1;
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+                            "s|bl", &name, &name_len,
+                                    &greet, &count) == FAILURE) {
+    return;
+  }
+  while (count-- > 0) {
+    php_printf("%s ", greet ? "Hello" : "Goodbye");
+    PHPWRITE(name, name_len);
+    php_printf("\n");
+  }
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
 	PHP_FE(p5_get_greeting, NULL)
 	PHP_FE(p5_add, p5_add_arginfo)
+	PHP_FE(p5_greet, p5_greet_arginfo)
 	PHP_FE_END
 };
 
