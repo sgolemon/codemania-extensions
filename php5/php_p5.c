@@ -147,6 +147,28 @@ static PHP_FUNCTION(p5_greet_all) {
   }
 }
 
+static int p5_greeter(zval** ppz TSRMLS_DC) {
+  if (Z_TYPE_PP(ppz) == IS_STRING) {
+    printf("=> %s\n", Z_STRVAL_PP(ppz));
+  } else {
+    zval copy;
+    ZVAL_ZVAL(&copy, *ppz, 1, 0);
+    convert_to_string(&copy);
+    printf("=> %s\n", Z_STRVAL(copy));
+    zval_dtor(&copy);
+  }
+  return ZEND_HASH_APPLY_KEEP;
+}
+
+static PHP_FUNCTION(p5_greet_all2) {
+  HashTable *arr;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+                            "h", &arr) == FAILURE) { return; }
+
+  zend_hash_apply(arr, p5_greeter TSRMLS_CC);
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
@@ -157,6 +179,7 @@ static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_enum_greetings, NULL)
 	PHP_FE(p5_array, p5_array_arginfo)
 	PHP_FE(p5_greet_all, NULL)
+	PHP_FE(p5_greet_all2, NULL)
 	PHP_FE_END
 };
 
