@@ -27,7 +27,11 @@ class MyClassData {
 };
 
 static String HHVM_FUNCTION(h3_bzlib_version) {
+#ifdef HAVE_BZ2_VERSION
   return BZ2_bzlibVersion();
+#else
+  return "Unknown";
+#endif
 }
 
 static int64_t HHVM_FUNCTION(h3_add, int64_t a, int64_t b) {
