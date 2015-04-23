@@ -1,7 +1,29 @@
 #include "hphp/runtime/ext/extension.h"
 #include "hphp/runtime/base/execution-context.h"
+#include "hphp/runtime/vm/native-data.h"
 
 using namespace HPHP;
+
+class MyClassData {
+ public:
+  // Default constructor is invoked whenever
+  // an instance of this class is created
+  // just prior to the constructor being called
+  MyClassData(): counter(0) {}
+
+  // Assignment operator is invoked to create
+  // a new instance from another one via cloning.
+  MyClassData& operator=(const MyClassData& src) {
+    counter = src.counter;
+    return *this;
+  }
+
+  // If a destructor is defined, it is invoked
+  // when the object falls out of scope
+  ~MyClassData() {}
+
+  int64_t counter;
+};
 
 static int64_t HHVM_FUNCTION(h3_add, int64_t a, int64_t b) {
   return a + b;
@@ -70,12 +92,25 @@ static Variant HHVM_STATIC_METHOD(MyClass, numeric, const String& val) {
   }
 }
 
+static int64_t HHVM_METHOD(MyClass, get) {
+  return Native::data<MyClassData>(this_)->counter;
+}
+
+static int64_t HHVM_METHOD(MyClass, inc) {
+  return ++Native::data<MyClassData>(this_)->counter;
+}
+
+static int64_t HHVM_METHOD(MyClass, dec) {
+  return --Native::data<MyClassData>(this_)->counter;
+}
+
 // StaticStrings hold references to constant strings
 // in a way the engine can use
 const StaticString
   s_H3_INTY("H3_INTY"),
   s_H3_GREETING("H3_GREETING"),
-  s_Hello_World("Hello World");
+  s_Hello_World("Hello World"),
+  s_MyClass("MyClass");
 
 class H3Extension : public Extension {
  public:
@@ -92,6 +127,12 @@ class H3Extension : public Extension {
 
     HHVM_ME(MyClass, foo);
     HHVM_STATIC_ME(MyClass, numeric);
+
+    HHVM_ME(MyClass, get);
+    HHVM_ME(MyClass, inc);
+    HHVM_ME(MyClass, dec);
+
+    Native::registerNativeDataInfo<MyClassData>(s_MyClass.get());
 
     loadSystemlib();
   }

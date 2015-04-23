@@ -16,10 +16,20 @@ function h3_enum_greetings(): array;
 <<__Native>>
 function h3_iterate(array $arr): void;
 
+<<__NativeData("MyClass")>>
 class MyClass {
   <<__Native>>
   public function foo(int $bar): ?string;
 
   <<__Native>>
   public static function numeric(string $val): mixed;
+
+  <<__Native>>
+  public function get(): int;
+
+  <<__Native>>
+  public function inc(): int;
+
+  <<__Native>>
+  public function dec(): int;
 }
