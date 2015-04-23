@@ -1,4 +1,5 @@
 #include "hphp/runtime/ext/extension.h"
+#include "hphp/runtime/base/execution-context.h"
 
 using namespace HPHP;
 
@@ -37,6 +38,14 @@ static Array HHVM_FUNCTION(h3_enum_greetings) {
   return ret;
 }
 
+static void HHVM_FUNCTION(h3_iterate, const Array& arr) {
+  for (ArrayIter iter(arr); iter; ++iter) {
+    g_context->write(iter.first().toString());
+    g_context->write(" => ");
+    g_context->write(iter.second().toString());
+    g_context->write("\n");
+  }
+}
 
 // StaticStrings hold references to constant strings
 // in a way the engine can use
@@ -56,6 +65,7 @@ class H3Extension : public Extension {
 
     HHVM_FE(h3_add);
     HHVM_FE(h3_enum_greetings);
+    HHVM_FE(h3_iterate);
 
     loadSystemlib();
   }

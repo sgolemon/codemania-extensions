@@ -12,3 +12,6 @@ function h3_add(int $a, int $b): int;
 
 <<__Native>>
 function h3_enum_greetings(): array;
+
+<<__Native>>
+function h3_iterate(array $arr): void;
