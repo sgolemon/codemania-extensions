@@ -24,5 +24,6 @@ missing
 mkinstalldirs
 modules/
 p5.la
+p5_myclass.lo
 php_p5.lo
 run-tests.php

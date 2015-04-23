@@ -218,7 +218,7 @@ static PHP_MINIT_FUNCTION(p5) {
 	REGISTER_DOUBLE_CONSTANT("P5_PI",     3.1415926535,   CONST_CS | CONST_PERSISTENT);
 	REGISTER_STRING_CONSTANT("P5_NAME",   "p5 extension",            CONST_PERSISTENT);
 
-	return SUCCESS;
+	return p5_myclass_init(INIT_FUNC_ARGS_PASSTHRU);
 }
 
 zend_module_entry p5_module_entry = {
