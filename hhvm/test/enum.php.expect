@@ -1,0 +1,18 @@
+Array
+(
+    [0] => Hello
+    [1] => Hola
+    [2] => Bonjour
+    [3] => 
+    [4] => 1
+    [5] => 42
+    [6] => 3.1415926535
+    [7] => Konichiwa
+    [spanish] => Array
+        (
+            [0] => Hola
+            [1] => Saludos
+            [2] => ¿Qué Tal?
+        )
+
+)
