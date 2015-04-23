@@ -95,6 +95,29 @@ PHP_FUNCTION(p5_enum_greetings) {
   add_assoc_zval(return_value, "spanish", es_greetings);  // $ret["spanish"] = $sg;
 }
 
+ZEND_BEGIN_ARG_INFO_EX(p5_array_arginfo, 0, ZEND_RETURN_VALUE, 1)
+	ZEND_ARG_ARRAY_INFO(0, arr, 0)
+ZEND_END_ARG_INFO();
+PHP_FUNCTION(p5_array) {
+  HashTable *arr;
+  zval **ppzval;
+  char *key = "123";
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+                            "h", &arr) == FAILURE) { return; }
+
+  if (zend_hash_exists(arr, "key", sizeof("key"))) {
+    php_printf("$arr['key'] is set\n");
+  }
+  if (zend_hash_find(arr, "key", sizeof("key"), (void**)&ppzval) == SUCCESS) {
+    php_printf("$arr['key'] is %s\n", (Z_TYPE_PP(ppzval) == IS_STRING)
+                                    ? Z_STRVAL_PP(ppzval) : "not a string");
+  }
+  if (zend_symtable_exists(arr, key, strlen(key) + 1)) {
+    php_printf("$arr['%s'] is set\n", key);
+  }
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
@@ -103,6 +126,7 @@ static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_greet, p5_greet_arginfo)
 	PHP_FE(p5_greeting_by_ref, p5_greeting_by_ref_arginfo)
 	PHP_FE(p5_enum_greetings, NULL)
+	PHP_FE(p5_array, p5_array_arginfo)
 	PHP_FE_END
 };
 
