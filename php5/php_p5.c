@@ -58,12 +58,28 @@ static PHP_FUNCTION(p5_greet) {
   }
 }
 
+ZEND_BEGIN_ARG_INFO_EX(p5_greeting_by_ref_arginfo, 0, ZEND_RETURN_VALUE, 1)
+  ZEND_ARG_INFO(1, greeting)
+ZEND_END_ARG_INFO();
+static PHP_FUNCTION(p5_greeting_by_ref) {
+  zval *name;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+                            "z", &name) == FAILURE) {
+    return;
+  }
+
+  zval_dtor(name);
+  ZVAL_STRING(name, "Rumor has it, hi", 1);
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
 	PHP_FE(p5_get_greeting, NULL)
 	PHP_FE(p5_add, p5_add_arginfo)
 	PHP_FE(p5_greet, p5_greet_arginfo)
+	PHP_FE(p5_greeting_by_ref, p5_greeting_by_ref_arginfo)
 	PHP_FE_END
 };
 
