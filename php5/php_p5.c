@@ -73,6 +73,28 @@ static PHP_FUNCTION(p5_greeting_by_ref) {
   ZVAL_STRING(name, "Rumor has it, hi", 1);
 }
 
+PHP_FUNCTION(p5_enum_greetings) {
+  zval *es_greetings;
+  array_init(return_value);    // Initialize rv as empty array
+
+  add_index_string(return_value, 0,   "Hello", 1);     // $ret[0]   = "Hello";
+  add_next_index_string(return_value, "Hola", 1);      // $ret[]    = "Hola";
+  add_assoc_string(return_value, "2", "Bonjour", 1);   // $ret["2"] = "Bonjour";
+
+  add_next_index_null(return_value);                  // $ret[] = null;
+  add_next_index_bool(return_value, 1);               // $ret[] = true;
+  add_next_index_long(return_value, 42);              // $ret[] = 42;
+  add_next_index_double(return_value, 3.1415926535);  // $ret[] = 3.1415926535;
+  add_next_index_string(return_value, "Konichiwa", 1); // $ret[] = "Konichiwa";
+
+  MAKE_STD_ZVAL(es_greetings);
+  array_init(es_greetings);                               // $sg = array();
+  add_next_index_string(es_greetings, "Hola", 1);         // $sg[] = "Hola";
+  add_next_index_string(es_greetings, "Saludos", 1);      // $sg[] = "Saludos";
+  add_next_index_string(es_greetings, "¿Qué Tal?", 1);    // $sg[] = "¿Qué Tal?";
+  add_assoc_zval(return_value, "spanish", es_greetings);  // $ret["spanish"] = $sg;
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
@@ -80,6 +102,7 @@ static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_add, p5_add_arginfo)
 	PHP_FE(p5_greet, p5_greet_arginfo)
 	PHP_FE(p5_greeting_by_ref, p5_greeting_by_ref_arginfo)
+	PHP_FE(p5_enum_greetings, NULL)
 	PHP_FE_END
 };
 
