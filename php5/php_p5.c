@@ -13,9 +13,18 @@ static PHP_FUNCTION(p5_pi) {
 	RETURN_DOUBLE(3.1415926535);
 }
 
+
+static PHP_FUNCTION(p5_get_greeting) {
+  // Equivalent to first copying the string, then passing 0
+  // The variable must "own" the string its given.
+  // RETURN_STRING(estrdup("Hello"), 0);
+  RETURN_STRING("Hello", 1);
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
+	PHP_FE(p5_get_greeting, NULL)
 	PHP_FE_END
 };
 
