@@ -2,6 +2,11 @@
 
 using namespace HPHP;
 
+static int64_t HHVM_FUNCTION(h3_add, int64_t a, int64_t b) {
+  return a + b;
+}
+
+
 // StaticStrings hold references to constant strings
 // in a way the engine can use
 const StaticString
@@ -17,6 +22,8 @@ class H3Extension : public Extension {
     Native::registerConstant<KindOfBoolean>(makeStaticString("H3_FALSY"), false);
     Native::registerConstant<KindOfInt64>(s_H3_INTY.get(), 123);
     Native::registerConstant<KindOfString>(s_H3_GREETING.get(), s_Hello_World.get());
+
+    HHVM_FE(h3_add);
 
     loadSystemlib();
   }
