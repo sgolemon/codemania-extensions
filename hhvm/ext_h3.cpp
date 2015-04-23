@@ -47,6 +47,29 @@ static void HHVM_FUNCTION(h3_iterate, const Array& arr) {
   }
 }
 
+static Variant HHVM_METHOD(MyClass, foo, int64_t bar) {
+  if (bar > 0) {
+    Variant v = bar;
+    return v.toString();
+  } else {
+    raise_warning("MyClass::foo() expects a positive value");
+    return init_null();
+  }
+}
+
+static Variant HHVM_STATIC_METHOD(MyClass, numeric, const String& val) {
+  int64_t ival;
+  double dval;
+  auto dt = val.get()->toNumeric(ival, dval);
+  if (dt == KindOfInt64) {
+    return ival;
+  } else if (dt == KindOfDouble) {
+    return dval;
+  } else {
+    return false;
+  }
+}
+
 // StaticStrings hold references to constant strings
 // in a way the engine can use
 const StaticString
@@ -66,6 +89,9 @@ class H3Extension : public Extension {
     HHVM_FE(h3_add);
     HHVM_FE(h3_enum_greetings);
     HHVM_FE(h3_iterate);
+
+    HHVM_ME(MyClass, foo);
+    HHVM_STATIC_ME(MyClass, numeric);
 
     loadSystemlib();
   }

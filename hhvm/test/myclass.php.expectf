@@ -1,0 +1,7 @@
+string(3) "123"
+
+Warning: MyClass::foo() expects a positive value in %s/test/myclass.php on line 5
+NULL
+int(456)
+float(4.56)
+bool(false)

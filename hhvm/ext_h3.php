@@ -15,3 +15,11 @@ function h3_enum_greetings(): array;
 
 <<__Native>>
 function h3_iterate(array $arr): void;
+
+class MyClass {
+  <<__Native>>
+  public function foo(int $bar): ?string;
+
+  <<__Native>>
+  public static function numeric(string $val): mixed;
+}
