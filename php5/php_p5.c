@@ -21,10 +21,26 @@ static PHP_FUNCTION(p5_get_greeting) {
   RETURN_STRING("Hello", 1);
 }
 
+ZEND_BEGIN_ARG_INFO_EX(p5_add_arginfo, 0, ZEND_RETURN_VALUE, 2)
+  ZEND_ARG_INFO(0, a)
+  ZEND_ARG_INFO(0, b)
+ZEND_END_ARG_INFO();
+
+static PHP_FUNCTION(p5_add) {
+  long a, b;
+
+  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+                            "ll", &a, &b) == FAILURE) {
+    return;
+  }
+  RETURN_LONG(a + b);
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
 	PHP_FE(p5_pi, NULL)
 	PHP_FE(p5_get_greeting, NULL)
+	PHP_FE(p5_add, p5_add_arginfo)
 	PHP_FE_END
 };
 
