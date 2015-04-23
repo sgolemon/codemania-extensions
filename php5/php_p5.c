@@ -4,8 +4,18 @@ static PHP_FUNCTION(p5_hello_world) {
 	php_printf("Hello World\n");
 }
 
+static PHP_FUNCTION(p5_pi) {
+	/* Equivalent to:
+	 * RETVAL_DOUBLE(3.141592635); return;
+	 * or:
+	 * ZVAL_DOUBLE(return_value, 3.1415926535); return;
+	 */
+	RETURN_DOUBLE(3.1415926535);
+}
+
 static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_hello_world, NULL)
+	PHP_FE(p5_pi, NULL)
 	PHP_FE_END
 };
 
