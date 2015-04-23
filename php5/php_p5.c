@@ -15,10 +15,7 @@ static PHP_FUNCTION(p5_pi) {
 
 
 static PHP_FUNCTION(p5_get_greeting) {
-  // Equivalent to first copying the string, then passing 0
-  // The variable must "own" the string its given.
-  // RETURN_STRING(estrdup("Hello"), 0);
-  RETURN_STRING("Hello", 1);
+  RETURN_STRING("Hello");
 }
 
 ZEND_BEGIN_ARG_INFO_EX(p5_add_arginfo, 0, ZEND_RETURN_VALUE, 2)
@@ -29,7 +26,7 @@ ZEND_END_ARG_INFO();
 static PHP_FUNCTION(p5_add) {
   long a, b;
 
-  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+  if (zend_parse_parameters(ZEND_NUM_ARGS(),
                             "ll", &a, &b) == FAILURE) {
     return;
   }
@@ -46,7 +43,7 @@ static PHP_FUNCTION(p5_greet) {
   int name_len;
   zend_bool greet = 0;
   long count = 1;
-  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+  if (zend_parse_parameters(ZEND_NUM_ARGS(),
                             "s|bl", &name, &name_len,
                                     &greet, &count) == FAILURE) {
     return;
@@ -64,34 +61,34 @@ ZEND_END_ARG_INFO();
 static PHP_FUNCTION(p5_greeting_by_ref) {
   zval *name;
 
-  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+  if (zend_parse_parameters(ZEND_NUM_ARGS(),
                             "z", &name) == FAILURE) {
     return;
   }
 
   zval_dtor(name);
-  ZVAL_STRING(name, "Rumor has it, hi", 1);
+  ZVAL_STRING(name, "Rumor has it, hi");
 }
 
 PHP_FUNCTION(p5_enum_greetings) {
   zval *es_greetings;
   array_init(return_value);    // Initialize rv as empty array
 
-  add_index_string(return_value, 0,   "Hello", 1);     // $ret[0]   = "Hello";
-  add_next_index_string(return_value, "Hola", 1);      // $ret[]    = "Hola";
-  add_assoc_string(return_value, "2", "Bonjour", 1);   // $ret["2"] = "Bonjour";
+  add_index_string(return_value, 0,   "Hello");       // $ret[0]   = "Hello";
+  add_next_index_string(return_value, "Hola");        // $ret[]    = "Hola";
+  add_assoc_string(return_value, "2", "Bonjour");     // $ret["2"] = "Bonjour";
 
   add_next_index_null(return_value);                  // $ret[] = null;
   add_next_index_bool(return_value, 1);               // $ret[] = true;
   add_next_index_long(return_value, 42);              // $ret[] = 42;
   add_next_index_double(return_value, 3.1415926535);  // $ret[] = 3.1415926535;
-  add_next_index_string(return_value, "Konichiwa", 1); // $ret[] = "Konichiwa";
+  add_next_index_string(return_value, "Konichiwa");   // $ret[] = "Konichiwa";
 
   MAKE_STD_ZVAL(es_greetings);
   array_init(es_greetings);                               // $sg = array();
-  add_next_index_string(es_greetings, "Hola", 1);         // $sg[] = "Hola";
-  add_next_index_string(es_greetings, "Saludos", 1);      // $sg[] = "Saludos";
-  add_next_index_string(es_greetings, "¿Qué Tal?", 1);    // $sg[] = "¿Qué Tal?";
+  add_next_index_string(es_greetings, "Hola");            // $sg[] = "Hola";
+  add_next_index_string(es_greetings, "Saludos");         // $sg[] = "Saludos";
+  add_next_index_string(es_greetings, "¿Qué Tal?");       // $sg[] = "¿Qué Tal?";
   add_assoc_zval(return_value, "spanish", es_greetings);  // $ret["spanish"] = $sg;
 }
 
@@ -100,20 +97,20 @@ ZEND_BEGIN_ARG_INFO_EX(p5_array_arginfo, 0, ZEND_RETURN_VALUE, 1)
 ZEND_END_ARG_INFO();
 PHP_FUNCTION(p5_array) {
   HashTable *arr;
-  zval **ppzval;
+  zval *pz;
   char *key = "123";
 
-  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+  if (zend_parse_parameters(ZEND_NUM_ARGS(),
                             "h", &arr) == FAILURE) { return; }
 
-  if (zend_hash_exists(arr, "key", sizeof("key"))) {
+  if (zend_hash_str_exists(arr, "key", sizeof("key"))) {
     php_printf("$arr['key'] is set\n");
   }
-  if (zend_hash_find(arr, "key", sizeof("key"), (void**)&ppzval) == SUCCESS) {
-    php_printf("$arr['key'] is %s\n", (Z_TYPE_PP(ppzval) == IS_STRING)
-                                    ? Z_STRVAL_PP(ppzval) : "not a string");
+  if ((pz = zend_hash_str_find(arr, "key", sizeof("key")))) {
+    php_printf("$arr['key'] is %s\n", (Z_TYPE_P(pz) == IS_STRING)
+                                    ? Z_STRVAL_P(pz) : "not a string");
   }
-  if (zend_symtable_exists(arr, key, strlen(key) + 1)) {
+  if (zend_symtable_str_exists(arr, key, strlen(key) + 1)) {
     php_printf("$arr['%s'] is set\n", key);
   }
 }
@@ -121,38 +118,38 @@ PHP_FUNCTION(p5_array) {
 static PHP_FUNCTION(p5_greet_all) {
   HashTable *arr;
   HashPosition pos;
-  zval **ppz;
+  zval *pz;
 
-  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+  if (zend_parse_parameters(ZEND_NUM_ARGS(),
                             "h", &arr) == FAILURE) { return; }
 
   for (zend_hash_internal_pointer_reset_ex(arr, &pos);
-       SUCCESS == zend_hash_get_current_data_ex(arr, (void**)&ppz, &pos);
+       pz = zend_hash_get_current_data_ex(arr, &pos);
        zend_hash_move_forward_ex(arr, &pos)) {
-    char *key;
-    ulong idx;
-    uint len, key_type = zend_hash_get_current_key_ex(arr, &key, &len, &idx, 0, &pos);
+    zend_string *key;
+    zend_ulong idx;
+    int key_type = zend_hash_get_current_key_ex(arr, &key, &idx, &pos);
     zval copy;
 
     if (key_type == HASH_KEY_IS_STRING) {
-      printf("%s ", key);
+      printf("%s ", key->val);
     } else {
       printf("%ld ", idx);
     }
 
-    ZVAL_ZVAL(&copy, *ppz, 1, 0);
+    ZVAL_ZVAL(&copy, pz, 1, 0);
     convert_to_string(&copy);
     printf("=> %s\n", Z_STRVAL(copy));
     zval_dtor(&copy);
   }
 }
 
-static int p5_greeter(zval** ppz TSRMLS_DC) {
-  if (Z_TYPE_PP(ppz) == IS_STRING) {
-    printf("=> %s\n", Z_STRVAL_PP(ppz));
+static int p5_greeter(zval* pz) {
+  if (Z_TYPE_P(pz) == IS_STRING) {
+    printf("=> %s\n", Z_STRVAL_P(pz));
   } else {
     zval copy;
-    ZVAL_ZVAL(&copy, *ppz, 1, 0);
+    ZVAL_ZVAL(&copy, pz, 1, 0);
     convert_to_string(&copy);
     printf("=> %s\n", Z_STRVAL(copy));
     zval_dtor(&copy);
@@ -163,10 +160,10 @@ static int p5_greeter(zval** ppz TSRMLS_DC) {
 static PHP_FUNCTION(p5_greet_all2) {
   HashTable *arr;
 
-  if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC,
+  if (zend_parse_parameters(ZEND_NUM_ARGS(),
                             "h", &arr) == FAILURE) { return; }
 
-  zend_hash_apply(arr, p5_greeter TSRMLS_CC);
+  zend_hash_apply(arr, p5_greeter);
 }
 
 static zend_function_entry p5_functions[] = {
@@ -182,34 +179,6 @@ static zend_function_entry p5_functions[] = {
 	PHP_FE(p5_greet_all2, NULL)
 	PHP_FE_END
 };
-
-/* REGISTER_NULL_CONSTANT and REGISTER_BOOL_CONSTANT
- * don't exist prior to PHP-5.6
- * Use these defines if you need them anyway.
- */
-#ifndef REGISTER_NULL_CONSTANT
-#define REGISTER_NULL_CONSTANT(cnsname, cnsflags) { \
-	zend_constant c; \
-	ZVAL_NULL(&c.value); \
-	c.flags = cnsflags; \
-	c.name = pestrdup(#cnsname, (cnsflags & CONST_PERSISTENT)); \
-	c.name_len = strlen(#cnsname); \
-	c.module_number = module_number; \
-	zend_register_constant(&c TSRMLS_CC); \
-}
-#endif
-
-#ifndef REGISTER_BOOL_CONSTANT
-#define REGISTER_BOOL_CONSTANT(cnsname, cnsval, cnsflags) { \
-	zend_constant c; \
-	ZVAL_BOOL(&c.value, cnsval); \
-	c.flags = cnsflags; \
-	c.name = pestrdup(#cnsnamei, (cnsflags & CONST_PERSISTENT)); \
-	c.name_len = strlen(#cnsname); \
-	c.module_number = module_number; \
-	zend_register_constant(&c TSRMLS_CC); \
-}
-#endif
 
 static PHP_MINIT_FUNCTION(p5) {
 	REGISTER_NULL_CONSTANT("P5_NOTHING",                  CONST_CS | CONST_PERSISTENT);
